@@ -8,7 +8,7 @@ import '../styles/Animal.css';
 function Animal() {
   const [animals, setAnimals] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
-
+// s
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
