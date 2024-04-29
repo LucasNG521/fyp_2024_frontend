@@ -71,22 +71,24 @@ function ReportDetails() {
             return;
         }
         try {
-
+            const mergedAlbum = [...(selectedAnimal.album || []), ...(report.album || [])];
             const mergedData = {
                 ...selectedAnimal,
-                ...Object.fromEntries(Object.entries(report).filter(([key]) => key !== 'color' && key !== 'type'))
+                ...Object.fromEntries(Object.entries(report).filter(([key]) => key !== 'color' && key !== 'type')),
+                album: mergedAlbum  // Combine the albums from both the selected animal and the report
             };
     
             await updateAnimal(selectedAnimal.animalId, mergedData);
             alert('Animal data updated successfully!');
             setIsModalOpen(false);
-            removeReport(report.reportId)
-            navigate('/animals');  
+            await removeReport(report.reportId);
+            navigate('/animals');
         } catch (error) {
             console.error('Error updating animal:', error);
             alert('Failed to update animal!');
         }
     };
+    
 
     const handleAddNewAnimal = async () => {
         try {
