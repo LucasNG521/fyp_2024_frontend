@@ -9,7 +9,7 @@ export const apiClient = axios.create({
   }
 });
 
-// Function to fetch all animals
+
 export const fetchAnimals = async () => {
   try {
     const response = await apiClient.get('/animals');
@@ -18,21 +18,28 @@ export const fetchAnimals = async () => {
     throw error;
   }
 };
-// Function to fetch a single animal by its ID
-export const fetchAnimalById = async (animalId) => {
-    try {
-      const response = await apiClient.get(`/animals/${animalId}`);
-      console.log('res ', response.data)
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
 
-// Function to perform login
-export const login = async (email, password) => {
+export const fetchAnimalById = async (animalId) => {
   try {
-    const response = await apiClient.post('/users/login', { email, password });
+    const response = await apiClient.get(`/animals/${animalId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addAnimal = async (data) => {
+  try {
+    const response = await apiClient.post(`/animals`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateAnimal = async (animalId, data) => {
+  try {
+    const response = await apiClient.put(`/animals/${animalId}`, data);
     return response.data;
   } catch (error) {
     throw error;

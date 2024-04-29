@@ -1,0 +1,11 @@
+.active {
+    background-color: #007bff; /* Change background color */
+    color: #fff; /* Change text color */
+    /* Add any other styles you want for the active tab */
+  }
+  
+  /* Optionally, you can add hover styles for the active tab */
+  .active:hover {
+    background-color: #0056b3; /* Change background color on hover */
+    /* Add any other hover styles you want for the active tab */
+  }

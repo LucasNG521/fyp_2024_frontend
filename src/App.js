@@ -1,68 +1,44 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
+import ReportDetails from './components/ReportDetails';
+import Animal from './components/Animal';
+import AddAnimal from './components/AddAnimal';
 import EditAnimal from './components/EditAnimal';
+import Sidebar from './components/Sidebar';
+import Cookies from 'js-cookie';
+import './App.css';
+
+const RequireAuth = ({ children }) => {
+  const uid = Cookies.get('uid');
+  if (!uid) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
 function App() {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <Router>
-      <style>{`
-      .container {
-        display: flex;
-      }
-
-      .sidebar {
-        width: 250px;
-        background-color: #f0f0f0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .content {
-        flex: 1;
-        padding: 20px;
-      }
-
-      .sidebar ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .sidebar li {
-        margin-bottom: 10px;
-      }
-
-      .sidebar li:last-child {
-        margin-top: auto; /* Pushes the logout button to the bottom */
-      }
-
-      .logout-button {
-        margin-top: auto;
-      }
-      `}</style>
-      <div className="container">
-        <div className="sidebar">
-          <h2>Menu</h2>
-          <ul>
-            <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/">Settings</Link></li>
-          </ul>
-          <div className="logout-button">
-            <Link to="/">Logout</Link> {/* Logout button */}
+    <div style={{ display: 'flex', height:'100%' }}>
+      <Router>
+        <Sidebar isOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <div className="container">
+          <div className="content">
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/report/:id" element={<RequireAuth><ReportDetails /></RequireAuth>} />
+              <Route path="/animals" element={<RequireAuth><Animal /></RequireAuth>} />
+              <Route path="/add-animal" element={<RequireAuth><AddAnimal /></RequireAuth>} />
+              <Route path="/editAnimal/:animalId" element={<RequireAuth><EditAnimal /></RequireAuth>} />
+            </Routes>
           </div>
         </div>
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<LoginPage />} exact />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/editAnimal/:animalId" element={<EditAnimal />} />
-          </Routes>
-        </div>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
