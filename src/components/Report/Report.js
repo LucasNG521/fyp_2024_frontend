@@ -18,7 +18,9 @@ function ReportPage() {
     async function loadData() {
       try {
         const reportsData = await fetchReports();
-        setReports(reportsData);
+        // Sort reports by timestamp in descending order
+        const sortedReports = reportsData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setReports(sortedReports);
         
       } catch (error) {
         alert('Failed to fetch data: ' + error.message);

@@ -8,7 +8,6 @@ import '../../styles/Animal.css';
 function Animal() {
   const [animals, setAnimals] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
-  // s
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -16,7 +15,9 @@ function Animal() {
     async function loadAnimals() {
       try {
         const animalsData = await fetchAnimals();
-        setAnimals(animalsData);
+        // Sort animals by nickName before setting state
+        const sortedAnimals = animalsData.sort((a, b) => a.nickName.localeCompare(b.nickName));
+        setAnimals(sortedAnimals);
         const logsData = await getLogs();
 
         const latestLogs = logsData.slice(-10);
@@ -77,9 +78,9 @@ function Animal() {
             ))}
           </div>
           <div className="pagination">
-            <button className="button-nav"  onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
+            <button className="button-nav" onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
             <span>Page {currentPage} of {totalPages}</span>
-            <button className="button-nav"  onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+            <button className="button-nav" onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
           </div>
         </div>
       ) : (
@@ -88,7 +89,6 @@ function Animal() {
       {selectedAnimal && (
         <AnimalModal animal={selectedAnimal} onClose={handleCloseModal} />
       )}
-
     </div>
   );
 }
