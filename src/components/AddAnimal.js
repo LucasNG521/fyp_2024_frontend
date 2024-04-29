@@ -85,6 +85,7 @@ function AddAnimal() {
 
   const displayOrder = [
     'image',
+    'type',
     'nickName',
     'gender',
     'color',

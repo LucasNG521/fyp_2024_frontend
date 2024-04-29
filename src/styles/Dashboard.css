@@ -58,32 +58,6 @@ h1, h3 {
   font-size: 14px;
 }
 
-/* Styling for activity logs */
-.activity-logs {
-  margin-top: 20px;
-}
-
-.activity-log {
-  background-color: #fff;
-  border-left: 5px solid #007BFF;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.activity-log > div:first-child {
-  font-weight: bold;
-  color: #555;
-}
-
-.activity-log > div:last-child {
-  color: #666;
-  font-size: 14px;
-}
-
-/* Existing CSS styles */
-
-/* Additional styles for pagination buttons */
 .button-nav {
   background-color: #007bff;
   color: white;
@@ -139,4 +113,68 @@ h1, h3 {
 .report-detail strong {
   color: #333;
   font-weight: bold;
+}
+
+.button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px; /* Add margin between buttons */
+}
+
+/* View Details button */
+.button-view-details {
+  background-color: #0056b3;
+  color: white;
+}
+
+/* Delete button */
+.button-delete {
+  background-color: #ff3333;
+  color: white;
+}
+
+
+
+/* Styling for activity logs */
+.activity-logs {
+  margin-top: 20px;
+}
+
+.activity-log {
+  background-color: #fff;
+  border-left: 5px solid #007BFF;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.activity-log > div:first-child {
+  font-weight: bold;
+  color: #555;
+}
+
+.activity-log > div:last-child {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Additional styles for different log messages */
+.new {
+  border-left-color: #007BFF; /* Blue for 'new' messages */
+}
+
+.deleted {
+  border-left-color: #DC3545; /* Red for 'deleted' messages */
+}
+
+.updated {
+  border-left-color: #28A745; /* Green for 'updated' messages */
+}
+
+.other {
+  border-left-color: #ccc; /* Gray for other messages */
 }

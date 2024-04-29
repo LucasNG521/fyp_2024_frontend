@@ -45,3 +45,12 @@ export const updateAnimal = async (animalId, data) => {
     throw error;
   }
 };
+
+export const removeAnimal = async (animalId) => {
+  try {
+    const response = await apiClient.delete(`/animals/${animalId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

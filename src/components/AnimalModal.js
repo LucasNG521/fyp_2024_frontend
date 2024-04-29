@@ -3,13 +3,25 @@ import { Link } from 'react-router-dom';
 import '../styles/AnimalModal.css';
 import ExpandedImageModal from './ExpandedImageModal';
 import Map from './Map';
-
+import ConfirmationModal from './ConfirmationModal'; // Import the ConfirmationModal component
+import { removeAnimal } from '../api/animal';
 
 function AnimalModal({ animal, onClose }) {
   const modalRef = useRef(null);
   const [expandedImage, setExpandedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // State to control the display of the confirmation modal
 
+  const handleDeleteAnimal = async (animalId) => {
+    setShowConfirmationModal(false); 
+    try {
+      await removeAnimal(animalId); 
+      onClose(); 
+      window.location.reload(); 
+    } catch (error) {
+      alert('Failed to delete animal: ' + error.message);
+    }
+  };
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -42,7 +54,6 @@ function AnimalModal({ animal, onClose }) {
   };
 
   const handleExpandedImageOutsideClick = (event) => {
-    // Check if the click is outside the expanded image modal
     if (expandedImage && !event.target.closest('.expanded-image-modal')) {
       handleCloseExpandedImage();
     }
@@ -61,7 +72,6 @@ function AnimalModal({ animal, onClose }) {
       <div className="modal-content" ref={modalRef}>
         <span className="close" onClick={onClose}>&times;</span>
 
-        
         <img src={animal.image} alt={animal.nickName} className="modal-animal-image" />
         <h2>{animal.nickName}</h2>
         <p>Type: {animal.type}</p>
@@ -72,11 +82,7 @@ function AnimalModal({ animal, onClose }) {
         <p>Neutered Status: {animal.neuteredStatus}</p>
         <p>Health Status: {animal.healthStatus}</p>
         <p>Description: {animal.description}</p>
-
-        {/* <Map lat={animal.latitude} lng={animal.longitude} /> */}
         <p>Location: {animal.latitude}, {animal.longitude}</p>
-
-     
 
         {animal.album && animal.album.length > 0 && (
           <div>
@@ -101,8 +107,6 @@ function AnimalModal({ animal, onClose }) {
           />
         )}
 
-
-
         {animal.HLS && animal.HLS.length > 0 && (
           <div className="card-container">           
             <h3>HLS</h3>
@@ -121,11 +125,17 @@ function AnimalModal({ animal, onClose }) {
           </div>
         )}
 
-
         <Link to={`/editAnimal/${animal.animalId}`} className="edit-button">Edit</Link>
+        <button className="button button-delete" onClick={() => setShowConfirmationModal(true)}>Delete</button>
 
+        {showConfirmationModal && (
+          <ConfirmationModal
+            message="Are you sure you want to delete this animal?"
+            onConfirm={() => handleDeleteAnimal(animal.animalId)}
+            onCancel={() => setShowConfirmationModal(false)}
+          />
+        )}
       </div>
-
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchReports, removeReport } from '../api/report'; 
 import { getLogs } from '../api/common';
 import { useNavigate } from 'react-router-dom';  
+import ConfirmationModal from './ConfirmationModal';
 import '../styles/Dashboard.css';
 
 function Dashboard() {
@@ -10,6 +11,8 @@ function Dashboard() {
   const [activityLogs, setActivityLogs] = useState([]);
   const [currentPageReports, setCurrentPageReports] = useState(1);
   const [currentPageLogs, setCurrentPageLogs] = useState(1);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
   const itemsPerPage = 5;
   
   useEffect(() => {
@@ -41,14 +44,36 @@ function Dashboard() {
   };
 
   const handleDeleteReport = async (reportId) => {
+    setReportToDelete(reportId);
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      await removeReport(reportId); 
-      setReports(reports.filter(report => report.reportId !== reportId));
+      await removeReport(reportToDelete);
+      setReports(reports.filter(report => report.reportId !== reportToDelete));
+      setShowConfirmationModal(false);
     } catch (error) {
       alert('Failed to delete report: ' + error.message);
     }
   };
 
+  const handleCancelDelete = () => {
+    setShowConfirmationModal(false);
+  };
+
+  function getClassForMessage(message) {
+    if (message.includes('new') || message.includes('created')) {
+      return 'new';
+    } else if (message.includes('deleted')) {
+      return 'deleted';
+    } else if (message.includes('updated')) {
+      return 'updated';
+    } else {
+      return 'other';
+    }
+  }
+  
   const displayedReports = paginate(reports, currentPageReports, itemsPerPage);
   const displayedLogs = paginate(activityLogs, currentPageLogs, itemsPerPage);
   const totalPagesReports = Math.ceil(reports.length / itemsPerPage);
@@ -59,7 +84,7 @@ function Dashboard() {
       <h1>Reports Dashboard</h1>
 
       <div className="reports">
-        <h3>Latest Reports:</h3>
+        <h3>Latest Reports: {reports.length}</h3>
         {displayedReports.length > 0 ? (
           <div>
             {displayedReports.map((report, index) => (
@@ -74,8 +99,8 @@ function Dashboard() {
                   <p className="report-detail"><strong>Color:</strong> {report.color}</p>
                   <p className="report-detail"><strong>Description:</strong> {report.description}</p>
                   <p className="report-detail"><strong>Timestamp:</strong> {new Date(report.timestamp).toLocaleString()}</p>
-                  <button onClick={() => navigate(`/report/${report.reportId}`)}>View Details</button>
-                  <button onClick={() => handleDeleteReport(report.reportId)}>Delete</button> {/* Add delete button */}
+                  <button className="button button-view-details" onClick={() => navigate(`/report/${report.reportId}`)}>View Details</button>
+                  <button className="button button-delete" onClick={() => handleDeleteReport(report.reportId)}>Delete</button>
                 </div>
               </div>
             ))}
@@ -95,12 +120,14 @@ function Dashboard() {
         )}
       </div>
 
-      <div className="activity-logs">
-        <h3>Activity Logs:</h3>
+    <div className="activity-logs">
+      <h3>Activity Logs:</h3>
         {displayedLogs.length > 0 ? (
           <div>
-            {displayedLogs.map((log, index) => (
-              <div key={index} className="activity-log">
+            {displayedLogs
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .map((log, index) => (
+              <div key={index} className={`activity-log ${getClassForMessage(log.message)}`}>
                 <div>{new Date(log.timestamp).toLocaleString()}</div>
                 <div>{log.message}</div>
               </div>
@@ -120,6 +147,15 @@ function Dashboard() {
           <p>No activity logs available.</p>
         )}
       </div>
+
+      {showConfirmationModal && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this report?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
     </div>
   );
 }

@@ -90,6 +90,16 @@ function EditAnimal() {
                     <button type="button" onClick={() => handleDeleteImage(index)}>Delete</button>
                   </div>
                 ))
+              ) : key === 'image' ? (
+                <div>
+                  <img src={animal[key]} alt="Animal Image" style={{ maxWidth: "200px", marginTop: "10px" }} />
+                  {/* <input
+                    type="file"
+                    name={key}
+                    onChange={handleChange}
+                    style={{ marginLeft: "10px" }}
+                  /> */}
+                </div>
               ) : (
                 <input
                   type={key === 'image' ? 'url' : 'text'}

@@ -15,12 +15,12 @@ const Sidebar = ({ isOpen, setSidebarOpen }) => {
         <h2>Menu</h2>
         <ul>
           <li>
-            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+            <Link to="/" className={location.pathname === '/' || location.pathname.startsWith('/report') ? 'active' : ''}>
               Dashboard
             </Link>
           </li>
           <li>
-            <Link to="/animals" className={location.pathname === '/animals' ? 'active' : ''}>
+            <Link to="/animals" className={location.pathname === '/animals' || location.pathname.startsWith('/editAnimal') || location.pathname.startsWith('/add-animal')? 'active' : ''}>
               Animals
             </Link>
           </li>
