@@ -1,147 +1,27 @@
 
-/* .activity-logs {
-    margin-top: 20px;
-  }
-  
-  .activity-log {
-    background-color: #f5f5f5;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .log-timestamp {
-    font-weight: bold;
-  }
-  
-  .log-message {
-    margin-top: 5px;
-  }
-
-   */
-
-   /* General styling for the dashboard */
 .dashboard-container {
-  font-family: 'Arial', sans-serif;
-  margin: 20px;
-}
-
-h1, h3 {
-  color: #333;
-}
-
-/* Styling for report items */
-.reports {
-  margin-top: 20px;
-}
-
-.report-item {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.report-item h4 {
-  color: #007BFF;
-}
-
-.report-item img {
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-.report-item p {
-  color: #666;
-  font-size: 14px;
-}
-
-.button-nav {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button-nav:hover {
-  background-color: #0056b3;
-}
-
-.button-nav:disabled {
-  background-color: #cccccc;
-  cursor: default;
-}
-
-
-.report-item {
   display: flex;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  flex-direction: column;
+  gap: 30px;
+  margin: 50px 0;
+  height: 100%;
+}
+
+.top-container, .bottom-container {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+.chart-container, .chart-data, .activity-logs, .summary {
   padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  align-items: center;
-}
-
-.report-image-container {
-  margin-right: 20px;
-}
-
-.report-image-container img {
-  width: 100px;
-  height: 100px;
-  border-radius: 5px;
-}
-
-.report-details {
-  flex-grow: 1;
-}
-
-.report-detail {
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #666;
-}
-
-.report-detail strong {
-  color: #333;
-  font-weight: bold;
-}
-
-.button {
-  padding: 10px 20px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-right: 10px; /* Add margin between buttons */
-}
-
-/* View Details button */
-.button-view-details {
-  background-color: #0056b3;
-  color: white;
-}
-
-/* Delete button */
-.button-delete {
-  background-color: #ff3333;
-  color: white;
 }
 
 
-
-/* Styling for activity logs */
 .activity-logs {
-  margin-top: 20px;
+  padding: 10px 20px;
+  width: 50%;
+  overflow-y: auto;
 }
 
 .activity-log {
@@ -162,19 +42,29 @@ h1, h3 {
   font-size: 14px;
 }
 
-/* Additional styles for different log messages */
+.activity-log a {
+  color: #666;
+  font-size: 14px;
+}
+
+.activity-log a:hover {
+  background-color: #f1ffc2c2;
+  color: black;
+}
+
 .new {
-  border-left-color: #007BFF; /* Blue for 'new' messages */
+  border-left-color: #28A745; 
+
 }
 
 .deleted {
-  border-left-color: #DC3545; /* Red for 'deleted' messages */
+  border-left-color: #DC3545; 
 }
 
 .updated {
-  border-left-color: #28A745; /* Green for 'updated' messages */
+  border-left-color: #007BFF; 
 }
 
 .other {
-  border-left-color: #ccc; /* Gray for other messages */
+  border-left-color: #ccc; 
 }

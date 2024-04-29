@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addAnimal } from '../api/animal';
-import useForm from '../hooks/useForm';
+import { addAnimal } from '../../api/animal';
+import useForm from '../../hooks/useForm';
 
 function AddAnimal() {
   const [animal, handleChange, setAnimal] = useForm({
@@ -116,11 +116,13 @@ function AddAnimal() {
                   accept="image/*"
                   style={{ marginLeft: "10px" }}
                 />
-                {animal.album.map((image, index) => (
-                  <div key={index}>
-                    <img src={URL.createObjectURL(image)} alt={`Album Image ${index}`} style={{ maxWidth: "100px", marginTop: "10px" }} />
-                  </div>
-                ))}
+                <div style={{display:'flex', flexWrap:'wrap'}}>
+                  {animal.album.map((image, index) => (
+                    <div key={index}>
+                      <img src={URL.createObjectURL(image)} alt={`Album Image ${index}`} style={{ maxWidth: "100px", marginTop: "10px" }} />
+                    </div>
+                  ))}
+                </div>
               </>
             ) : key === 'image' ? (
               <input
@@ -130,6 +132,31 @@ function AddAnimal() {
                 style={{ marginLeft: "10px" }}
                 accept="image/*"
               />
+            ) : key === 'age' ? (
+              <input
+                type="number"
+                min={0}
+                max={30}
+                name={key}
+                value={animal[key]}
+                onChange={handleChange}
+                style={{ marginLeft: "10px" }}
+              />
+            ) : key === 'latitude' || key === 'longitude' ? (
+              <input
+                type="number"
+                name={key}
+                value={animal[key]}
+                onChange={handleChange}
+                style={{ marginLeft: "10px" }}
+                step="0.000001"
+              />
+            ): key === 'neuteredStatus' ? (
+              <div onChange={handleChange}>
+                <input type="radio" value="Yes" name="neuteredStatus" checked={animal.neuteredStatus === 'Yes'} /> Yes
+                <input type="radio" value="No" name="neuteredStatus" checked={animal.neuteredStatus === 'No'} /> No
+                <input type="radio" value="Unknown" name="neuteredStatus" checked={animal.neuteredStatus === 'Unknown'} /> Unknown
+              </div>
             ) : (
               <input
                 type="text"
@@ -141,8 +168,8 @@ function AddAnimal() {
             )}
           </div>
         ))}
-        <button type="submit">Submit</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
+        <button className='submit-animal' type="submit">Submit</button>
+        <button className='cancel-submit-animal' type="button" onClick={handleCancel}>Cancel</button>
       </form>
       <style jsx>{`
         .add-animal-container {
@@ -153,21 +180,28 @@ function AddAnimal() {
           box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        input, button {
+        input, .submit-animal, .cancel-submit-animal {
           padding: 8px;
           margin-top: 5px;
           border: 1px solid #ccc;
           border-radius: 5px;
         }
 
-        button {
+        .submit-animal {
           cursor: pointer;
           background-color: #4CAF50;
           color: white;
           margin-right: 10px;
         }
 
-        button:hover {
+        .cancel-submit-animal {
+          cursor: pointer;
+          background-color: #f44336;
+          color: white;
+          margin-right: 10px;
+        }
+
+        .submit-animal:hover,cancel-submit-animal:hover{
           background-color: #45a049;
         }
       `}</style>

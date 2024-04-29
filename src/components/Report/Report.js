@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { fetchReports, removeReport } from '../api/report'; 
+import { fetchReports, removeReport } from '../../api/report'; 
 import { useNavigate } from 'react-router-dom';  
-import ConfirmationModal from './ConfirmationModal';
-import '../styles/ReportsPage.css';
+import ConfirmationModal from '../ConfirmationModal';
+import '../../styles/Report.css';
 
-function ReportsPage() {
-  const navigate = useNavigate();
+function ReportPage() {
+  const navigate = useNavigate(); 
   const [reports, setReports] = useState([]);
+  const [activityLogs, setActivityLogs] = useState([]);
   const [currentPageReports, setCurrentPageReports] = useState(1);
+  const [currentPageLogs, setCurrentPageLogs] = useState(1);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
   const itemsPerPage = 5;
   
   useEffect(() => {
-    const loadReports = async () => {
+    async function loadData() {
       try {
-        const data = await fetchReports();
-        setReports(data);
+        const reportsData = await fetchReports();
+        setReports(reportsData);
+        
       } catch (error) {
-        alert('Failed to fetch reports: ' + error.message);
+        alert('Failed to fetch data: ' + error.message);
       }
     };
-    loadReports();
+
+    loadData();
   }, []);
 
   const paginate = (array, pageNumber, pageSize) => {
@@ -32,7 +36,11 @@ function ReportsPage() {
     setCurrentPageReports(newPage);
   };
 
-  const handleDeleteReport = (reportId) => {
+  const handlePageChangeLogs = (newPage) => {
+    setCurrentPageLogs(newPage);
+  };
+
+  const handleDeleteReport = async (reportId) => {
     setReportToDelete(reportId);
     setShowConfirmationModal(true);
   };
@@ -51,12 +59,27 @@ function ReportsPage() {
     setShowConfirmationModal(false);
   };
 
+  function getClassForMessage(message) {
+    if (message.includes('new') || message.includes('created')) {
+      return 'new';
+    } else if (message.includes('deleted')) {
+      return 'deleted';
+    } else if (message.includes('updated')) {
+      return 'updated';
+    } else {
+      return 'other';
+    }
+  }
+  
   const displayedReports = paginate(reports, currentPageReports, itemsPerPage);
+  const displayedLogs = paginate(activityLogs, currentPageLogs, itemsPerPage);
   const totalPagesReports = Math.ceil(reports.length / itemsPerPage);
+  const totalPagesLogs = Math.ceil(activityLogs.length / itemsPerPage);
 
   return (
     <div className="reports-page-container">
-      <h1>Reports</h1>
+      <h1>Reports Management</h1>
+      <h4>Total Reports: {reports.length}</h4>
       {displayedReports.map((report, index) => (
         <div key={index} className="report-item">
           <div className="report-image-container">
@@ -79,6 +102,8 @@ function ReportsPage() {
           <button className="button-nav" onClick={() => handlePageChangeReports(currentPageReports - 1)} disabled={currentPageReports === 1}>
             Previous
           </button>
+          <span>Page {currentPageReports} of {totalPagesReports}</span>
+
           <button className="button-nav" onClick={() => handlePageChangeReports(currentPageReports + 1)} disabled={currentPageReports === totalPagesReports}>
             Next
           </button>
@@ -95,4 +120,4 @@ function ReportsPage() {
   );
 }
 
-export default ReportsPage;
+export default ReportPage;

@@ -58,6 +58,31 @@
 
 .content {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0 50px;
+  height: 100%;
+  /* justify-content: center; */
+
+}
+
+.sidebar a {
+  display: block;
+  /* background-color: #4CAF50; */
+  color: black;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+.sidebar a:hover {
+  background-color: #0056b3c2;
+  color: white;
 }
 
 .sidebar ul {

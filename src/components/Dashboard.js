@@ -1,65 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { fetchReports, removeReport } from '../api/report'; 
+import { fetchReports } from '../api/report';
+import { fetchAnimals } from '../api/animal';
 import { getLogs } from '../api/common';
-import { useNavigate } from 'react-router-dom';  
-import ConfirmationModal from './ConfirmationModal';
+import { Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS } from 'chart.js/auto';
+import { Link } from 'react-router-dom';
 import '../styles/Dashboard.css';
 
 function Dashboard() {
-  const navigate = useNavigate(); 
   const [reports, setReports] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
-  const [currentPageReports, setCurrentPageReports] = useState(1);
+  const [chartData, setChartData] = useState({ labels: [], datasets: [{ data: [] }] });
+  const [totalReports, setTotalReports] = useState(0);
+  const [totalAnimals, setTotalAnimals] = useState(0);
+  const [totalData, setTotalData] = useState({
+    labels: [],
+    datasets: [{ data: [] }]
+  });
   const [currentPageLogs, setCurrentPageLogs] = useState(1);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [reportToDelete, setReportToDelete] = useState(null);
   const itemsPerPage = 5;
-  
+
   useEffect(() => {
     async function loadData() {
-      try {
-        const reportsData = await fetchReports();
-        setReports(reportsData);
-        
-        const logsData = await getLogs();
-        setActivityLogs(logsData);
-      } catch (error) {
-        alert('Failed to fetch data: ' + error.message);
-      }
+      const reportsData = await fetchReports();
+      setReports(reportsData);
+      setTotalReports(reportsData.length);
+
+      const animalsData = await fetchAnimals();
+      setTotalAnimals(animalsData.length);
+
+      const logsData = await getLogs();
+      setActivityLogs(logsData);
+      processChartData(reportsData);
+
+      setTotalData({
+        labels: ['Reports', 'Animals'],
+        datasets: [{
+          data: [reportsData.length, animalsData.length],
+          backgroundColor: ['#FF6384', '#36A2EB'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB']
+        }]
+      });
     };
 
     loadData();
   }, []);
 
+  const processChartData = (reportsData) => {
+    const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const counts = Array(7).fill(0);
+    reportsData.forEach(report => {
+      const day = new Date(report.timestamp).getDay();
+      counts[day]++;
+    });
+
+    setChartData({
+      labels: weekDays,
+      datasets: [{
+        label: 'Reports per Day',
+        data: counts,
+        backgroundColor: 'rgba(53, 162, 235, 0.5)'
+      }]
+    });
+  };
+
   const paginate = (array, pageNumber, pageSize) => {
     return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-  };
-
-  const handlePageChangeReports = (newPage) => {
-    setCurrentPageReports(newPage);
-  };
-
-  const handlePageChangeLogs = (newPage) => {
-    setCurrentPageLogs(newPage);
-  };
-
-  const handleDeleteReport = async (reportId) => {
-    setReportToDelete(reportId);
-    setShowConfirmationModal(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await removeReport(reportToDelete);
-      setReports(reports.filter(report => report.reportId !== reportToDelete));
-      setShowConfirmationModal(false);
-    } catch (error) {
-      alert('Failed to delete report: ' + error.message);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowConfirmationModal(false);
   };
 
   function getClassForMessage(message) {
@@ -73,88 +80,82 @@ function Dashboard() {
       return 'other';
     }
   }
-  
-  const displayedReports = paginate(reports, currentPageReports, itemsPerPage);
+
+  activityLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   const displayedLogs = paginate(activityLogs, currentPageLogs, itemsPerPage);
-  const totalPagesReports = Math.ceil(reports.length / itemsPerPage);
   const totalPagesLogs = Math.ceil(activityLogs.length / itemsPerPage);
+
+  const handlePageChangeLogs = (newPage) => {
+    setCurrentPageLogs(newPage);
+  };
+
 
   return (
     <div className="dashboard-container">
-      <h1>Reports Dashboard</h1>
-
-      <div className="reports">
-        <h3>Latest Reports: {reports.length}</h3>
-        {displayedReports.length > 0 ? (
-          <div>
-            {displayedReports.map((report, index) => (
-              <div key={index} className="report-item">
-                <div className="report-image-container">
-                  <img src={report.image} alt={report.nickName} />
-                  <p><strong>@{report.nickName}</strong></p>
-                </div>
-                <div className="report-details">
-                  <p className="report-detail"><strong>Type:</strong> {report.type}</p>
-                  <p className="report-detail"><strong>Breed:</strong> {report.breed}</p>
-                  <p className="report-detail"><strong>Color:</strong> {report.color}</p>
-                  <p className="report-detail"><strong>Description:</strong> {report.description}</p>
-                  <p className="report-detail"><strong>Timestamp:</strong> {new Date(report.timestamp).toLocaleString()}</p>
-                  <button className="button button-view-details" onClick={() => navigate(`/report/${report.reportId}`)}>View Details</button>
-                  <button className="button button-delete" onClick={() => handleDeleteReport(report.reportId)}>Delete</button>
-                </div>
-              </div>
+      <h3>Weekly Reports</h3>
+      <div className="top-container">
+        <div className="chart-container" style={{ width: '70%' }}>
+          <Bar data={chartData} />
+        </div>
+        <div className="chart-data">
+          <h4>Result:</h4>
+          <ul>
+            {chartData.datasets?.[0].data.map((count, index) => (
+              <li key={index}>{chartData.labels[index]}: {count}</li>
             ))}
-            {totalPagesReports > 1 && (
-              <>
-                <button className="button-nav" onClick={() => handlePageChangeReports(currentPageReports - 1)} disabled={currentPageReports === 1}>
-                  Previous
-                </button>
-                <button className="button-nav" onClick={() => handlePageChangeReports(currentPageReports + 1)} disabled={currentPageReports === totalPagesReports}>
-                  Next
-                </button>
-              </>
-            )}
-          </div>
-        ) : (
-          <p>No reports available.</p>
-        )}
+          </ul>
+        </div>
       </div>
 
-    <div className="activity-logs">
-      <h3>Activity Logs:</h3>
-        {displayedLogs.length > 0 ? (
-          <div>
-            {displayedLogs
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        .map((log, index) => (
-              <div key={index} className={`activity-log ${getClassForMessage(log.message)}`}>
-                <div>{new Date(log.timestamp).toLocaleString()}</div>
-                <div>{log.message}</div>
+      <div className="bottom-container">
+        <div className="activity-logs">
+          <h3>Activity Logs:</h3>
+          {displayedLogs.length > 0 ? (
+            <div>
+              <div style={{ minHeight: '350px' }}>
+                {displayedLogs.map((log, index) => {
+                  // Check if the log message starts with "Received new report:"
+                  const reportMatch = log.message.match(/Received new report: (\w+)/);
+                  return (
+                    <div key={index} className={`activity-log ${getClassForMessage(log.message)}`}>
+                      <div>{new Date(log.timestamp).toLocaleString()}</div>
+                      <div>
+                        {reportMatch ? (
+                          <Link to={`/report/${reportMatch[1]}`}>
+                            {log.message}
+                          </Link>
+                        ) : (
+                          log.message
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-            {totalPagesLogs > 1 && (
-              <>
-                <button className="button-nav" onClick={() => handlePageChangeLogs(currentPageLogs - 1)} disabled={currentPageLogs === 1}>
-                  Previous
-                </button>
-                <button className="button-nav" onClick={() => handlePageChangeLogs(currentPageLogs + 1)} disabled={currentPageLogs === totalPagesLogs}>
-                  Next
-                </button>
-              </>
-            )}
-          </div>
-        ) : (
-          <p>No activity logs available.</p>
-        )}
-      </div>
+              {totalPagesLogs > 1 && (
+                <>
+                  <button className="button-nav" onClick={() => handlePageChangeLogs(currentPageLogs - 1)} disabled={currentPageLogs === 1}>
+                    Previous
+                  </button>
+                  <span>Page {currentPageLogs} of {totalPagesLogs}</span>
+                  <button className="button-nav" onClick={() => handlePageChangeLogs(currentPageLogs + 1)} disabled={currentPageLogs === totalPagesLogs}>
+                    Next
+                  </button>
+                </>
+              )}
+            </div>
+          ) : (
+            <p>No activity logs available.</p>
+          )}
+        </div>
 
-      {showConfirmationModal && (
-        <ConfirmationModal
-          message="Are you sure you want to delete this report?"
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
+        <div className="summary" style={{ width: '50%' }}>
+          <h3>Total:</h3>
+          <div >
+            <Pie data={totalData} />
+          </div>
+        </div>
+      </div>
 
     </div>
   );

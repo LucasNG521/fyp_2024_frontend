@@ -12,10 +12,10 @@ const Sidebar = ({ isOpen, setSidebarOpen }) => {
   return (
     <div className={`sidebar ${isOpen ? '' : 'sidebar-closed'}`}>
       <div className="sidebar-content">
-        <h2>Menu</h2>
+        {/* <h2>Menu</h2> */}
         <ul>
           <li>
-            <Link to="/" className={location.pathname === '/' || location.pathname.startsWith('/report') ? 'active' : ''}>
+            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
               Dashboard
             </Link>
           </li>
@@ -24,12 +24,28 @@ const Sidebar = ({ isOpen, setSidebarOpen }) => {
               Animals
             </Link>
           </li>
+          <li>
+            <Link to="/reports" className={location.pathname === '/reports' || location.pathname.startsWith('/reports') || location.pathname.startsWith('/reports')? 'active' : ''}>
+              Reports
+            </Link>
+          </li>
+          <li>
+            <Link to="/cameras" className={location.pathname === '/cameras' || location.pathname.startsWith('/edit-camera') || location.pathname.startsWith('/cameras')? 'active' : ''}>
+              Camera
+            </Link>
+          </li>
+          <li>
+            <Link to="/HLS" className={location.pathname === '/HLS' || location.pathname.startsWith('/HLS') || location.pathname.startsWith('/HLS')? 'active' : ''}>
+              HLS
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="logout-button">
-        <Link to="/login" onClick={() => { Cookies.remove('uid'); window.location.reload(); }}>
+        @FYP 2024 
+        {/* <Link to="/login" onClick={() => { Cookies.remove('uid'); window.location.reload(); }}>
           Logout
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

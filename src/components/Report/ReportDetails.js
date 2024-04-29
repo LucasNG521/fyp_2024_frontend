@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchReportsById, removeReport } from '../api/report';
-import { addAnimal, fetchAnimals, updateAnimal } from '../api/animal';
-import SimpleModal from './SimpleModal';
-import '../styles/ReportDetails.css'; 
+import { fetchReportsById, removeReport } from '../../api/report';
+import { addAnimal, fetchAnimals, updateAnimal } from '../../api/animal';
+import SimpleModal from '../SimpleModal';
+import '../../styles/ReportDetails.css'; 
 
 function ReportDetails() {
     const { id } = useParams();

@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/AnimalModal.css';
-import ExpandedImageModal from './ExpandedImageModal';
-import Map from './Map';
-import ConfirmationModal from './ConfirmationModal'; // Import the ConfirmationModal component
-import { removeAnimal } from '../api/animal';
+import '../../styles/AnimalModal.css';
+import ExpandedImageModal from '../ExpandedImageModal';
+import Map from '../Map';
+import ConfirmationModal from '../ConfirmationModal'; // Import the ConfirmationModal component
+import { removeAnimal } from '../../api/animal';
 
 function AnimalModal({ animal, onClose }) {
   const modalRef = useRef(null);

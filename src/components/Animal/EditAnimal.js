@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchAnimalById, updateAnimal } from '../api/animal';
-import useForm from '../hooks/useForm';
+import { fetchAnimalById, updateAnimal } from '../../api/animal';
+import useForm from '../../hooks/useForm';
 
 function EditAnimal() {
   const { animalId } = useParams();
@@ -85,7 +85,7 @@ function EditAnimal() {
               {key.replace(/([A-Z](?=[a-z]))/g, ' $1').trim().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}:
               {Array.isArray(animal[key]) && key === 'album' ? (
                 animal[key].map((image, index) => (
-                  <div key={index}>
+                  <div key={index} style={{    display: 'flex',alignItems: 'center'}}>
                     <img src={image} alt={`Album Image ${index}`} style={{ maxWidth: "200px", marginTop: "10px" }} />
                     <button type="button" onClick={() => handleDeleteImage(index)}>Delete</button>
                   </div>
@@ -112,8 +112,8 @@ function EditAnimal() {
             </div>
           )
         ))}
-        <button type="submit">Submit</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
+        <button className='submit-animal' type="submit">Submit</button>
+        <button className='cancel-submit-animal' type="button" onClick={handleCancel}>Cancel</button>
       </form>
       <style jsx>{`
         .edit-animal-container {
@@ -133,13 +133,27 @@ function EditAnimal() {
 
         button {
           cursor: pointer;
-          background-color: #4CAF50;
+          background-color: #f44336;
           color: white;
           margin-right: 10px;
         }
 
         button:hover {
           background-color: #45a049;
+        }
+
+        .submit-animal {
+          cursor: pointer;
+          background-color: #4CAF50;
+          color: white;
+          margin-right: 10px;
+        }
+
+        .cancel-submit-animal {
+          cursor: pointer;
+          background-color: #f44336;
+          color: white;
+          margin-right: 10px;
         }
       `}</style>
     </div>

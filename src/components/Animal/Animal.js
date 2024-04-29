@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchAnimals} from '../api/animal';
-import { getLogs } from '../api/common';
+import { fetchAnimals } from '../../api/animal';
+import { getLogs } from '../../api/common';
 import AnimalModal from './AnimalModal';
-import '../styles/Animal.css';
+import '../../styles/Animal.css';
 
 function Animal() {
   const [animals, setAnimals] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
-// s
+  // s
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -52,31 +52,34 @@ function Animal() {
   const currentAnimals = animals.slice(startIndex, endIndex);
 
   return (
-    <div>
-      <h1>Animals</h1>
-      <Link to="/add-animal">Add Animal</Link>
+    <div className='animal-page'>
+      <h1>Animals Management</h1>
+      <h4>Total Animals: {animals.length}</h4>
+      <Link className="add-button" to="/add-animal">Add Animal</Link>
       {currentAnimals.length > 0 ? (
         <div>
-          {currentAnimals.map(animal => (
-            <div key={animal.animalId} className="animal-card" onClick={() => handleAnimalClick(animal)}>
-              <div>
-                <img src={animal.image} alt={animal.nickName} className="animal-image" />
-                <div style={{paddingLeft:'10px'}}>@{animal.nickName}</div>
-              </div>
+          <div style={{ height: '780px' }}>
+            {currentAnimals.map(animal => (
+              <div key={animal.animalId} className="animal-card" onClick={() => handleAnimalClick(animal)}>
+                <div>
+                  <img src={animal.image} alt={animal.nickName} className="animal-image" />
+                  <div style={{ paddingLeft: '10px' }}>@{animal.nickName}</div>
+                </div>
 
-              <div className='card-content'>
-                <div>Type: {animal.type}</div>
-                <div>Breed: {animal.breed}</div>
-                <div>Color: {animal.color}</div>
-                <div>Neutered Status: {animal.neuteredStatus}</div>
-                {/* <div>Description: {animal.description}</div> */}
+                <div className='card-content'>
+                  <div>Type: {animal.type}</div>
+                  <div>Breed: {animal.breed}</div>
+                  <div>Color: {animal.color}</div>
+                  <div>Neutered Status: {animal.neuteredStatus}</div>
+                  {/* <div>Description: {animal.description}</div> */}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           <div className="pagination">
-            <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
+            <button className="button-nav"  onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
             <span>Page {currentPage} of {totalPages}</span>
-            <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+            <button className="button-nav"  onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
           </div>
         </div>
       ) : (
