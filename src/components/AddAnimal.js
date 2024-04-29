@@ -18,7 +18,7 @@ function AddAnimal() {
     formData.append('files', file);
 
     try {
-      const response = await fetch('http://localhost:8080/upload', {
+      const response = await fetch('https://fyp2024.azurewebsites.net/upload', {
         method: 'POST',
         body: formData,
       });

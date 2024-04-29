@@ -29,7 +29,7 @@ const ImageUpload = () => {
             formData.append('files', file); // 'files' as the key to match server side
         });
 
-        axios.post('http://localhost:8080/upload', formData, {
+        axios.post('https://fyp2024.azurewebsites.net/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
